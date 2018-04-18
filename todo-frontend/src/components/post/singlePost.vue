@@ -6,7 +6,7 @@
         This is some text within the default card block.
     </b-card>
     <div>
-        <b-card title="Card title" class="mt-3">
+        <b-card v-bind:title=blog.name class="mt-3">
             
                 <p>
                 Some quick example text to build on the <em>card title</em> and make up the bulk of the card's content.
@@ -67,20 +67,37 @@
 
 <script>
 export default {
-  data () {   
-      return {
-      items: [{
-        text: 'Node.js',
-        href: '#'
-      }, {
-        text: 'Priority#1',
-        href: '#'
-      }]
-    }
+  data() {
+    return {
+      items: [
+        {
+          text: "Node.js",
+          href: "#"
+        },
+        {
+          text: "Priority#1",
+          href: "#"
+        }
+      ],
+      id: this.$route.params.id,
+      blog: {}
+    };
   },
-  methods: {    
-  }
-}
+  created() {
+    this.$http
+      .get("https://jsonplaceholder.typicode.com/users/")
+      .then(function(data) {
+        return data.json();
+        //  console.log(data);
+        //  this.blog = data.body
+      })
+      .then(function(data) {
+        this.blog = data[this.id]
+        console.log(data);
+      });
+  },
+  methods: {}
+};
 </script>
 
 <style>

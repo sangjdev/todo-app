@@ -4,9 +4,10 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var fs = require('fs');
 var path = require('path');
-// var mysql = require('mysql');
-// var dbconfig   = require('./config/database.js');
-// var connection = mysql.createConnection(dbconfig);
+var cors = require('cors');
+var mysql = require('mysql');
+var dbconfig   = require('../configs/database.js');
+var pool = mysql.createPool(dbconfig);
 
 app.set('port', process.env.PORT || 3000);
 
@@ -30,8 +31,10 @@ app.use(session({
     saveUninitialized: true
 }));
 
+app.use(cors());
+
 //사용자 요청에 대한 라우팅
-var router = require('../router/main')(app, fs);
+var router = require('../router/main')(app, fs, pool);
 
 //서버 시작
 var server = app.listen(app.get('port'), function () {
