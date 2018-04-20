@@ -7,7 +7,7 @@
             <h3>제목</h3>
             <b-form-textarea id="textarea1"
                             name="title"
-                            v-model="title"
+                            v-model="postinfo.title"
                             placeholder="제목을 입력해주세요"
                             :rows="1"
                             :max-rows="10"
@@ -21,7 +21,7 @@
         <h3>카테고리 설정</h3>
         <b-row>        
         <b-col>
-            <b-form-select v-model="selected1" :options="optioncate" class="mb-3 float-left mt-3" >
+            <b-form-select v-model="postinfo.cate" :options="optioncate" class="mb-3 float-left mt-3" >
                 <template slot="first">
                     <!-- this slot appears above the options from 'options' prop -->
                     <option :value="null" disabled>-- 카테고리를 선택해주세요 --</option>
@@ -32,7 +32,7 @@
                 </b-form-select>
         </b-col>
         <b-col>
-            <b-form-select v-model="selected2" :options="optionprior" class="mb-3 float-left mt-3" >
+            <b-form-select v-model="postinfo.prior" :options="optionprior" class="mb-3 float-left mt-3" >
                 <template slot="first">
                     <!-- this slot appears above the options from 'options' prop -->
                     <option :value="null" disabled>-- 우선순위를 선택해주세요 --</option>
@@ -43,18 +43,17 @@
                 </b-form-select>
         </b-col>                
         </b-row>                
-
-        <div>Selected: <strong>{{ selected1 }}</strong>, <strong>{{ selected2 }}</strong></div>
+        
 
         </div>
 
         <br>
 
         <div class="mt-3">
-        <h3>내용</h3>
+        <h3>내용</h3>        
         <b-form-textarea id="textarea1"
                         name="content"
-                        v-model="content"
+                        v-model="postinfo.content"
                         placeholder="TODO 리스트를 작성할 수 있습니다."
                         :rows="15"
                         :max-rows="15"
@@ -75,11 +74,7 @@
 <script>
 export default {
   data() {
-    return {
-      title: "",
-      content: "",
-      selected1: null,
-      selected2: null,
+    return {      
       optioncate: [
         { value: "spring", text: "spring" },
         { value: "node.js", text: "node.js" }
@@ -89,21 +84,21 @@ export default {
         { value: "2", text: "우선순위-2" }
       ],
       postinfo: {
-        title: "title",
-        content: "content",
-        cate: "",
-        prior: ""
+        title: "",
+        content: "",
+        cate: null,
+        prior: null
       }
     };
   },
   methods: {
     post: function() {
-        console.log("Vue post데이터전송");
+      console.log("Vue post데이터전송");     
       this.$http
         .post("http://localhost:3000/post/add", this.postinfo)
         .then(function(data) {
           console.log(data);
-          this.submitted = true;
+          location.href = '/';
         });
     }
   }

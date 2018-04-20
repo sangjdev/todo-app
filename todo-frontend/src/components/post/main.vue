@@ -20,15 +20,15 @@
                 </b-tabs>             
 
                 <div v-for="(blog,i) in blogs" :key="i">
-                    <b-card v-bind:title=blog.name
-                            v-bind:sub-title=blog.id>
+                    <b-card v-bind:title=blog.post_title
+                            v-bind:sub-title=blog.post_date>
                         <p class="card-text">
-                            {{blog.website}} {{blog.company.catchPhrase}}
+                            {{blog.post_content | snippet}}
                         </p>
                         <div class="text-right">                            
-                            <router-link v-bind:to="'/edit/' + blog.id">수정</router-link>
+                            <router-link v-bind:to="'/edit/' + blog._pid">수정</router-link>
                             &nbsp;
-                            <router-link v-bind:to="'/post/' + blog.id ">더보기</router-link>
+                            <router-link v-bind:to="'/post/' + blog._pid ">더보기</router-link>
                         </div>
                     </b-card>
                 </div>                
@@ -80,19 +80,35 @@ export default {
   },
   created() {
     this.$http
-      .get('https://jsonplaceholder.typicode.com/users/')
-      .then(function(data) {         
-        return data.json();
+      .get('http://localhost:3000/post/')
+      .then(function(data) {    
+        
+        return data.json();        
       }).then(function (data) {
-        var blogsArray = [];
-        for (let key in data) {
-          // console.log(data[key]);
-          data[key].id = key;
-          blogsArray.push(data[key])
-        }
-        this.blogs = blogsArray;
-        // console.log(data);
-        console.log(blogsArray);
+        data.forEach(element => {
+            console.log(element);
+            this.blogs.push(element);
+        });
+        // console.log("data : "+data);
+        // var blogsArray = [];
+        // for (let key in data) {
+        //   // console.log(data[key]);
+        //   data[key]._pid = key;
+        //   blogsArray.push(data[key])
+        // }
+        // console.log("blogsArray: " + blogsArray);
+        // this.blogs = blogsArray;
+        // console.log("this.blogs: " + this.blogs);
+
+        // var blogsArray = [];
+        // for (let key in data) {
+        //   // console.log(data[key]);
+        //   data[key].id = key;
+        //   blogsArray.push(data[key])
+        // }
+        // this.blogs = blogsArray;
+        // // console.log(data);
+        // console.log(blogsArray);
       })
   },
   methods: {
