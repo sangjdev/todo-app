@@ -17,8 +17,9 @@ module.exports = function (app, fs) {
 
         console.log('post/add들어옴');
 
-        var db = require('../models'); // sequelize 세팅
-        console.log("db : " + db);
+        // sequelize 세팅
+        var db = require('../models');
+
         db.sequelize
             .sync({ force: false }) // 테이블 생성
             .then(function () {
@@ -53,10 +54,6 @@ module.exports = function (app, fs) {
             return "" + date.getFullYear() + "" + month + "" + day + "" + hrs;
         }
 
-        console.log(getYMD());
-
-        console.log('title : ' + title + ',' + content + ',' + cate + ',' + prior);
-        console.log('리디렉션 전')
         db.postinfo.create({
             post_title: title,
             post_content: content,
@@ -69,29 +66,39 @@ module.exports = function (app, fs) {
         }).catch(function (err) {
             //TODO: error handling
         });
+    });
 
+    app.post('/post/edit/:postId', function (req, res) {
 
-        console.log('리디렉션 후')
-        // model.add();
+        const db = require('../models'); // sequelize 세팅
+        var postId = req.params.postId;
 
-        // pool.getConnection(function (err, connection) {
+        console.log('잘들어옴 : ' + postId);
 
-        // let sql = "INSERT INTO`test`.`postinfo` ( `post_title`, `post_content`, `post_date`, `post_cate`, `user_id`, `post_prior`, `use_yn`) VALUES ?";
-        // let value = ('title','content','201804131120','node.js','sangj','1','y');
+        let title = req.body['title'];
+        let content = req.body['content'];
+        let cate = req.body['cate'];
+        let prior = req.body['prior'];
 
-        //     connection.query(sql, value, function (err, rows, fields) {
-        //         if (!err) {
-        //             console.log('The solution is: ', rows[0]);
-        //             res.send(rows);
-        //         } else {
-        //             console.log('Error while performing Query.', err);
-        //         }
-        //         connection.release();
-        //     });
-        // })
-    })
+        console.log('title : ' + title + ' content : ' + content + 'cate : ' + cate + 'prior: ' + prior);
 
-    app.get('/post', function (req, res, next) {
+        db.postinfo.update({
+                post_title: title,
+                post_content: content,
+                post_cate: cate,
+                post_prior: prior,
+            },
+            { where: { _pid: postId }, returning: true })
+            .then(function (result) {
+                res.json(result);
+            }).catch(function (err) {
+                //TODO: error handling
+            });
+    });
+
+    app.get('/post/', function (req, res, next) {
+
+        // var postId = req.params.postId;
 
         const db = require('../models'); // sequelize 세팅
 
@@ -102,48 +109,71 @@ module.exports = function (app, fs) {
         //     }).catch(function (e) {
         //         throw new Error('DB 연결 실패: ' + e);
         //     });
-        let result = {};
-        
+        var result = [];
+
         db.postinfo.findAll().then(function (results) {
-            
-            result = JSON.parse(JSON.stringify(results));
-            console.log("result :::: " + result)
-            
+
+            rs = JSON.parse(JSON.stringify(results));
+            for (let i in rs) {
+                result.push(rs[i]);
+            }
+
+            // console.log('최종 result : ' + JSON.stringify(result))
             res.json(results);
         }).catch(function (err) {
             console.log("finAll()에러 발생")
             //TODO: error handling
             return next(err);
         });
-        
 
         db.sequelize.query("SELECT COUNT(*) as cnt, post_cate FROM test.postinfo GROUP BY post_cate")
-            .then(function (results) { // .sequelize.query('SQL 쿼리 작성 ... 현재는 간단한 join문         
-                let tmp = results[0][0];
-                let obj = {};
-                console.log('tmp : '+ tmp);          
-                for(let i in tmp){
-                    obj[i] = tmp;
-                    console.log('i : '+ i);
-                    console.log('tmp : '+ tmp);
+            .then(function (results) { // .sequelize.query('SQL 쿼리 작성 ... 현재는 간단한 join문                         
+                console.log('시작 result : ' + result)
+                let arr = results[0];
+
+                for (let i in arr) {
+                    let obj = {};
+                    for (let key in arr[i]) {
+                        obj[key] = arr[i][key];
+                        console.log(key + '=>' + arr[i][key]);
+                    }
+                    // console.log(Object.keys(arr[i]));
+
+                    // console.log(arr[i].cnt);
+                    // console.log(arr[i].post_cate);                    
+                    result.push(obj);
                 }
-                // console.log('obj 1 : ' + obj[cnt]);
-                console.log('obj 2 : ' + obj[post_cate]);
-                // console.log(JSON.parse(results[0][0]));
-                // result['123'] = 0;
-                // arr.push(results);
-                // console.log(arr)
-                // res.json(results[0]); // 결과는 배열형태로 받는다.
+                console.log('최종 result : ' + JSON.stringify(result))
+                // console.log('arr : '+ arr[0].cnt);
+                // console.log('arr : '+ arr[0].post_cate);
+                // console.log('arr : '+ arr[1].cnt);
+                // console.log('arr : '+ arr[1].post_cate);
+
                 // res.json(result);
-                // result.push(tmp);
-                console.log("result :::: " + result);
+
+                // results = [{cnt:123123,post_cate:node},{cnt:123123,post_cate:spring}]
+                // results = [{cnt:123123,post_cate:node},{cnt:123123,post_cate:spring}]
+
             }).catch(function (err) {
                 return next(err);
-            })                
-    })
+            })
+    });
+
+    app.get('/post/menu', function (req, res, next) {
+
+        const db = require('../models'); // sequelize 세팅
+
+        db.sequelize.query("SELECT COUNT(*) as cnt, post_cate FROM test.postinfo GROUP BY post_cate")
+            .then(function (results) { // .sequelize.query('SQL 쿼리 작성 ... 현재는 간단한 join문                         
+                res.json(results[0]);
+
+            }).catch(function (err) {
+                return next(err);
+            })
+    });
 
     app.get('/post/:postId', function (req, res) {
-        5
+
 
         var db = require('../models'); // sequelize 세팅        
         var postId = req.params.postId;
@@ -162,22 +192,22 @@ module.exports = function (app, fs) {
         });
     })
 
-    app.post('/post/edit/:postId', function (req, res) {
+    // app.post('/post/edit/:postId', function (req, res) {
 
-        console.log('post/edit/id')
+    //     console.log('post/edit/id')
 
-        pool.getConnection(function (err, connection) {
+    //     pool.getConnection(function (err, connection) {
 
-            connection.query('SELECT * FROM test.userinfo', function (err, rows, fields) {
-                if (!err) {
-                    console.log('The solution is: ', rows[0]);
-                    res.send(rows);
-                } else {
-                    console.log('Error while performing Query.', err);
-                }
-                connection.release();
-            });
-        })
-    })
+    //         connection.query('SELECT * FROM test.userinfo', function (err, rows, fields) {
+    //             if (!err) {
+    //                 console.log('The solution is: ', rows[0]);
+    //                 res.send(rows);
+    //             } else {
+    //                 console.log('Error while performing Query.', err);
+    //             }
+    //             connection.release();
+    //         });
+    //     })
+    // })
 
 }
