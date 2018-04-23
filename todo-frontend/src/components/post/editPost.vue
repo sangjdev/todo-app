@@ -107,7 +107,7 @@ export default {
   },
   created() {
     this.$http
-      .get("http://localhost:3000/post/" + this.postinfo.id)
+      .get("http://localhost:3000/post/info/" + this.postinfo.id)
       .then(function(data) {
         return data.json();
         //  console.log(data);

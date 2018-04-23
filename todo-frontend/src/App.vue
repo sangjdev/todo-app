@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-cloak>
     <app-header></app-header>
     <!-- <app-main></app-main>     -->
     <!-- <singlePost></singlePost> -->
@@ -11,18 +11,18 @@
 
 <script>
 import header from './components/common/header.vue'
-import footer from './components/common/footer.vue'
 import main from './components/post/main.vue'
 import addPost from './components/post/addPost.vue'
 import singlePost from './components/post/singlePost.vue'
+import footer from './components/common/footer.vue'
 
 export default {
   components: {
     'app-header': header,
-    'app-main': main,    
-    'app-footer': footer,
+    'app-main': main,        
     'addpost': addPost,
-    'singlePost': singlePost
+    'singlePost': singlePost,
+    'app-footer': footer
   },
   data () {   
     return {

@@ -6,7 +6,7 @@ module.exports = function (app, fs) {
 
         console.log('root directory 실행');
 
-        res.render('index.html');
+        res.send('rest api dev root')
     })
 
     app.post('/post/add', function (req, res) {
@@ -83,11 +83,11 @@ module.exports = function (app, fs) {
         console.log('title : ' + title + ' content : ' + content + 'cate : ' + cate + 'prior: ' + prior);
 
         db.postinfo.update({
-                post_title: title,
-                post_content: content,
-                post_cate: cate,
-                post_prior: prior,
-            },
+            post_title: title,
+            post_content: content,
+            post_cate: cate,
+            post_prior: prior,
+        },
             { where: { _pid: postId }, returning: true })
             .then(function (result) {
                 res.json(result);
@@ -96,63 +96,31 @@ module.exports = function (app, fs) {
             });
     });
 
-    app.get('/post/', function (req, res, next) {
+    app.post('/post/edit/:postId', function (req, res) {
 
-        // var postId = req.params.postId;
+        console.log('post/edit/id')
+
+        pool.getConnection(function (err, connection) {
+
+            connection.query('SELECT * FROM test.userinfo', function (err, rows, fields) {
+                if (!err) {
+                    console.log('The solution is: ', rows[0]);
+                    res.send(rows);
+                } else {
+                    console.log('Error while performing Query.', err);
+                }
+                connection.release();
+            });
+        })
+    });
+
+    app.get('/post/count/', function (req, res, next) {
 
         const db = require('../models'); // sequelize 세팅
 
-        // db.sequelize
-        //     .sync({ force: false }) // 테이블 생성
-        //     .then(function () {
-        //         console.log('DB 연결 성공');
-        //     }).catch(function (e) {
-        //         throw new Error('DB 연결 실패: ' + e);
-        //     });
-        var result = [];
-
-        db.postinfo.findAll().then(function (results) {
-
-            rs = JSON.parse(JSON.stringify(results));
-            for (let i in rs) {
-                result.push(rs[i]);
-            }
-
-            // console.log('최종 result : ' + JSON.stringify(result))
-            res.json(results);
-        }).catch(function (err) {
-            console.log("finAll()에러 발생")
-            //TODO: error handling
-            return next(err);
-        });
-
-        db.sequelize.query("SELECT COUNT(*) as cnt, post_cate FROM test.postinfo GROUP BY post_cate")
+        db.sequelize.query("SELECT COUNT(*) as cnt FROM test.postinfo")
             .then(function (results) { // .sequelize.query('SQL 쿼리 작성 ... 현재는 간단한 join문                         
-                console.log('시작 result : ' + result)
-                let arr = results[0];
-
-                for (let i in arr) {
-                    let obj = {};
-                    for (let key in arr[i]) {
-                        obj[key] = arr[i][key];
-                        console.log(key + '=>' + arr[i][key]);
-                    }
-                    // console.log(Object.keys(arr[i]));
-
-                    // console.log(arr[i].cnt);
-                    // console.log(arr[i].post_cate);                    
-                    result.push(obj);
-                }
-                console.log('최종 result : ' + JSON.stringify(result))
-                // console.log('arr : '+ arr[0].cnt);
-                // console.log('arr : '+ arr[0].post_cate);
-                // console.log('arr : '+ arr[1].cnt);
-                // console.log('arr : '+ arr[1].post_cate);
-
-                // res.json(result);
-
-                // results = [{cnt:123123,post_cate:node},{cnt:123123,post_cate:spring}]
-                // results = [{cnt:123123,post_cate:node},{cnt:123123,post_cate:spring}]
+                res.json(results[0]);
 
             }).catch(function (err) {
                 return next(err);
@@ -172,8 +140,7 @@ module.exports = function (app, fs) {
             })
     });
 
-    app.get('/post/:postId', function (req, res) {
-
+    app.get('/post/info/:postId', function (req, res) {
 
         var db = require('../models'); // sequelize 세팅        
         var postId = req.params.postId;
@@ -192,22 +159,62 @@ module.exports = function (app, fs) {
         });
     })
 
-    // app.post('/post/edit/:postId', function (req, res) {
+    app.get('/post/:postId', function (req, res) {
 
-    //     console.log('post/edit/id')
+        var postId = 1;
 
-    //     pool.getConnection(function (err, connection) {
+        if (req != null) {
+            postId = req.params.postId;   
+            console.log('req != null : postId : ' + postId);
+        }
+        
+        console.log('postId : ' + postId);
 
-    //         connection.query('SELECT * FROM test.userinfo', function (err, rows, fields) {
-    //             if (!err) {
-    //                 console.log('The solution is: ', rows[0]);
-    //                 res.send(rows);
-    //             } else {
-    //                 console.log('Error while performing Query.', err);
-    //             }
-    //             connection.release();
-    //         });
-    //     })
-    // })
+        const db = require('../models'); // sequelize 세팅
+
+        // db.sequelize
+        //     .sync({ force: false }) // 테이블 생성
+        //     .then(function () {
+        //         console.log('DB 연결 성공');
+        //     }).catch(function (e) {
+        //         throw new Error('DB 연결 실패: ' + e);
+        //     });
+        var result = [];
+        
+        var perpage = 3;
+        var pnum = parseInt((postId-1)*3);
+
+        console.log('typeof(pnum) : ' + typeof(pnum));
+        console.log('typeof(pnum) : ' + pnum);
+        db.postinfo.findAll({
+            offset: pnum,
+            limit: 3,
+            order: [                
+                ['_pid', 'DESC']
+            ],
+        }).then(function (results) {
+
+            rs = JSON.parse(JSON.stringify(results));
+            for (let i in rs) {
+                result.push(rs[i]);
+            }
+
+            // console.log('최종 result : ' + JSON.stringify(result))
+            res.json(results);
+        }).catch(function (err) {
+            console.log("finAll()에러 발생")
+            //TODO: error handling
+            // return next(err);
+        });
+
+        
+    });
+
+    
+
+    //넌 뭔데 같은게 두개나
+    
+
+    
 
 }
