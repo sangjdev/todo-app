@@ -102,7 +102,7 @@ module.exports = function (app, fs) {
 
         pool.getConnection(function (err, connection) {
 
-            connection.query('SELECT * FROM test.userinfo', function (err, rows, fields) {
+            connection.query('SELECT * FROM todo.userinfo', function (err, rows, fields) {
                 if (!err) {
                     console.log('The solution is: ', rows[0]);
                     res.send(rows);
@@ -118,7 +118,7 @@ module.exports = function (app, fs) {
 
         const db = require('../models'); // sequelize 세팅
 
-        db.sequelize.query("SELECT COUNT(*) as cnt FROM test.postinfo")
+        db.sequelize.query("SELECT COUNT(*) as cnt FROM todo.postinfo")
             .then(function (results) { // .sequelize.query('SQL 쿼리 작성 ... 현재는 간단한 join문                         
                 res.json(results[0]);
 
@@ -131,7 +131,7 @@ module.exports = function (app, fs) {
 
         const db = require('../models'); // sequelize 세팅
 
-        db.sequelize.query("SELECT COUNT(*) as cnt, post_cate FROM test.postinfo GROUP BY post_cate")
+        db.sequelize.query("SELECT COUNT(*) as cnt, post_cate FROM todo.postinfo GROUP BY post_cate")
             .then(function (results) { // .sequelize.query('SQL 쿼리 작성 ... 현재는 간단한 join문                         
                 res.json(results[0]);
 

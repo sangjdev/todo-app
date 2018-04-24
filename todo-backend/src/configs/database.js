@@ -12,7 +12,7 @@ module.exports = {
 
     
     sequelize = new Sequelize(
-        'test', // 데이터베이스 이름
+        'todo', // 데이터베이스 이름
         'root', // 유저 명
         'root', // 비밀번호
         {
