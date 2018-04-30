@@ -1,4 +1,4 @@
-const express = require('express');
+var express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const session = require('express-session');
@@ -7,6 +7,9 @@ const path = require('path');
 const cors = require('cors');
 const mysql = require('mysql');
 const mysql2 = require('mysql2');
+const passport = require('passport');
+const passportConfig  = require("./passport/"); 
+
 // const dbconfig   = require('./configs/database.js');
 // const pool = mysql.createPool(dbconfig);
 
@@ -27,18 +30,29 @@ app.use(bodyParser.urlencoded());
 
 //세션 설정
 app.use(session({
-    secret: '@#@$MYSIGN#@$#$',
+    key: 'sid',
+    secret: 'secret',
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: true,
+    cookie: {
+        maxAge: 1000 * 60 * 60 // 쿠키 유효기간 1시간
+    }
 }));
 
 app.use(cors());
 
 //사용자 요청에 대한 라우팅
-var router = require('./api/index')(app, fs);
+// var router = require('./api/index')(app, fs);
+
+app.use(passport.initialize());
+app.use(passport.session());
+passportConfig();
+
+app.use(require('./api'));
+// app.use('/api', require('./api'));
 
 //서버 시작
-var server = app.listen(app.get('port'), function () {
+app.listen(app.get('port'), function () {
 
     console.log('express server has started on port 3000');
 });

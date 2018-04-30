@@ -79,7 +79,7 @@ export default {
     // this.currentPage = this.$route.params.pagenum;
     // console.log(products);    
     this.$http
-      .get("http://localhost:3000/post/"+ this.currentPage)
+      .get("http://localhost:3000/post/post/"+ this.currentPage)
       .then(function(data) {
         return data.json();
       })
