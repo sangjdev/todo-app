@@ -130,29 +130,40 @@ exports.login2 = function (req, res) {
         return "" + date.getFullYear() + "" + month + "" + day + "" + hrs;
     }
 
-    const getToken = function (uid) {
-        var token = jwt.sign({
-            id: uid
-        }, secret);
+    function getToken(uid) {
+        const user = { id: uid };
+        const token = jwt.sign({ user }, 'my_secret_key');
+        // console.log('token: ' + token);
+        // const user = {uid : uid};
+
+        // var token = jwt.sign({
+        //     id: user
+        // }, secret);
         return token;
     }
 
     db.userinfo.findOne({
         where: { user_pw: pw2, user_id: id }
     }).then(function (results) {
-
+        // console.log(getToken(123));
+        // console.log(getToken('123'));
         if (results) {
             console.log('성공이다 430 051');
-            console.log('results.user_id : ' + results.user_id);
-            res.json({
-                token: getToken(results.user_id)
-            });
+            // console.log('results.user_id : ' + results.user_id);
+            console.log();
+            let tmp = getToken(results.user_id);
+            console.log("tmp : " + tmp);
+                        
+            res.cookie('test2','12', {
+                maxAge: 10000                
+           });            
+           res.send('visitors:'); 
         } else {
             console.log('실패다 430');
-        }                
-        res.json({
-            results : 'false'
-        });
+            res.json({
+                results : 'false'
+            });
+        }                        
     }).catch(function (err) {
         console.log("finAll()에러 발생")
         //TODO: error handling

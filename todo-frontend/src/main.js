@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import VueCookie from 'vue-cookie'
 import BootstrapVue from "bootstrap-vue"
 import App from './App.vue'
 import VueResource from 'vue-resource'
@@ -12,6 +13,7 @@ import {store} from './store/store'
 Vue.use(VueResource);
 Vue.use(BootstrapVue)
 Vue.use(VueRouter);
+Vue.use(VueCookie);
 
 Vue.filter('snippet', function (value) {
   return value.slice(0,100) + '...';

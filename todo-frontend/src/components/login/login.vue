@@ -82,8 +82,8 @@ export default {
       this.$http
         .post("http://localhost:3000/user/login", this.userinfo)
         .then(function(data) {
-          console.log(data);
-          location.href = '/';
+          // console.log('data : ' + JSON.stringify(data));                    
+          // location.href = '/';
         });
     }
   }

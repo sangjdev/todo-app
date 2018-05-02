@@ -1,8 +1,9 @@
 const router = require('express').Router();
 const ctrl   = require('./post.ctrl');
+const auth   = require('../auth/auth');
 
 //글 목록, 글 한개, 추가, 수정, 
-router.get('/post/:postId', ctrl.post);
+router.get('/post/:postId', auth.auth, ctrl.post);
 router.get('/info/:postId', ctrl.info);
 router.post('/add', ctrl.add);
 router.post('/edit/:postId', ctrl.editSglPost);

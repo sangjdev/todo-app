@@ -9,7 +9,7 @@ const mysql = require('mysql');
 const mysql2 = require('mysql2');
 const passport = require('passport');
 const passportConfig  = require("./passport/"); 
-
+const cookieParser = require('cookie-parser')
 // const dbconfig   = require('./configs/database.js');
 // const pool = mysql.createPool(dbconfig);
 
@@ -23,6 +23,8 @@ app.set('port', process.env.PORT || 3000);
 
 //뷰에서 사용할 css 
 // app.use(express.static(__dirname + '/public'));
+
+app.use(cookieParser());
 
 //body 파서 아주 중요함67
 app.use(bodyParser.json());
