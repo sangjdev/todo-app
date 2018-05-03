@@ -52,6 +52,27 @@ passportConfig();
 
 app.use(require('./api'));
 // app.use('/api', require('./api'));
+//여기부터
+app.get('/setCookie',function (req, res) {
+    res.cookie('string','cookie').send('hello');
+    // res.redirect('/getCookie');
+})
+
+app.get('/getCookie',function (req, res) {
+    console.log(req.cookies);
+    res.send(req.cookies);    
+})
+
+app.get('/clearCookie',function (req, res) {
+    res.clearCookie('string');
+    res.send('clear');    
+})
+
+app.get('/',function (req, res) {
+
+    res.send('hello world');
+})
+//여기까지 테스트코드
 
 //서버 시작
 app.listen(app.get('port'), function () {

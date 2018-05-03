@@ -4,11 +4,13 @@ var jwt = require('jsonwebtoken');
 exports.auth = function (req, res, next) {
 
     console.log('인증 들어옴');    
-    console.log('Cookies: ', req.cookies)
-
     console.log(req.cookies);
-    console.log(req.cookies.test2);
-    console.log(JSON.stringify(req.cookies.test2));
+    // res.send(req.cookies);    
+
+    console.log('Cookies: ', JSON.stringify(req.cookies));
+    
+    console.log(req.cookies.test);
+    console.log(JSON.stringify(req.cookies.test));
     console.log('쿠키안에 값 인증 들어옴');
     var token = req.get('accessToken');
 
