@@ -40,7 +40,8 @@
   </b-form-group>
 </b-card>
 <div class="float-right">  
-  <b-button v-on:click.prevent="post">로그인</b-button>
+  <b-button v-on:click="post">로그인</b-button>
+  <b-button v-on:click="post2">로그인2</b-button>
 </div>
 
 </b-container>
@@ -48,48 +49,82 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   computed: {
-    state () {
-      return this.name.length >= 4 ? true : false
+    state() {
+      return this.name.length >= 4 ? true : false;
     },
-    invalidFeedback () {
+    invalidFeedback() {
       if (this.name.length > 4) {
-        return ''
+        return "";
       } else if (this.name.length > 0) {
-        return 'Enter at least 4 characters'
+        return "Enter at least 4 characters";
       } else {
-        return 'Please enter something'
+        return "Please enter something";
       }
     },
-    validFeedback () {
-      return this.state === true ? 'Thank you' : ''
+    validFeedback() {
+      return this.state === true ? "Thank you" : "";
     }
   },
-  data () {
+  data() {
     return {
-      name: '',
+      name: "",
       userinfo: {
         id: "",
-        pw: ""       
+        pw: ""
       }
-    }
+    };
   },
   methods: {
     post: function() {
-      console.log("Vue post데이터전송");
-      console.log(this.userinfo.id + this.userinfo.pw );
-      this.$http
-        .post("http://localhost:3000/user/login", this.userinfo)
-        .then(function(data) {
-          console.log('data : ' + data);
-          console.log('data : ' + JSON.stringify(data));
-          // console.log('data : ' + JSON.stringify(data));                    
-          // location.href = '/';
+      // console.log("Vue post데이터전송");
+      // console.log(this.userinfo.id + this.userinfo.pw );
+      // this.$http
+      //   .post("http://localhost:3000/user/login", this.userinfo)
+      //   .then(function(data) {
+      //     console.log('data : ' + data);
+      //     console.log('data : ' + JSON.stringify(data));
+      //   });
+
+      axios("http://localhost:3000/user/login", {
+        method: "post",
+        withCredentials: true
+      })
+        .then(function(response) {
+          console.log(response);
+        })
+        .catch(function(error) {
+          console.log(error);
         });
+    },
+    post2: function() {
+      axios("http://localhost:3000/user/cc", {
+        method: "get",
+        withCredentials: true
+      })
+        .then(function(response) {
+          console.log(response);
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+      // axios
+      //   .get("http://localhost:3000/user/cc", {
+      //     firstName: "Fred",
+      //     lastName: "Flintstone"
+      //   })
+      //   .then(function(response) {
+      //     console.log(response);
+      //   })
+      //   .catch(function(error) {
+      //     console.log(error);
+      //   });
     }
   }
-}
+};
 </script>
 
 <style>

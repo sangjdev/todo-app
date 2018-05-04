@@ -8,7 +8,7 @@ const cors = require('cors');
 const mysql = require('mysql');
 const mysql2 = require('mysql2');
 const passport = require('passport');
-const passportConfig  = require("./passport/"); 
+const passportConfig = require("./passport/");
 const cookieParser = require('cookie-parser')
 // const dbconfig   = require('./configs/database.js');
 // const pool = mysql.createPool(dbconfig);
@@ -50,25 +50,38 @@ app.use(passport.initialize());
 app.use(passport.session());
 passportConfig();
 
+app.use(function (req, res, next) {
+    var allowedOrigins = ['http://127.0.0.1:8080', 'http://localhost:8020', 'http://127.0.0.1:9000', 'http://localhost:9000'];
+    var origin = req.headers.origin;
+    if (allowedOrigins.indexOf(origin) > -1) {
+        res.setHeader('Access-Control-Allow-Origin', origin);
+    }
+    //res.header('Access-Control-Allow-Origin', 'http://127.0.0.1:8020');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.header('Access-Control-Allow-Credentials', true);
+    return next();
+});
+
 app.use(require('./api'));
 // app.use('/api', require('./api'));
 //여기부터
-app.get('/setCookie',function (req, res) {
-    res.cookie('string','cookie').send('hello');
+app.get('/setCookie', function (req, res) {
+    res.cookie('string', 'cookie').send('hello');
     // res.redirect('/getCookie');
 })
 
-app.get('/getCookie',function (req, res) {
+app.get('/getCookie', function (req, res) {
     console.log(req.cookies);
-    res.send(req.cookies);    
+    res.send(req.cookies);
 })
 
-app.get('/clearCookie',function (req, res) {
+app.get('/clearCookie', function (req, res) {
     res.clearCookie('string');
-    res.send('clear');    
+    res.send('clear');
 })
 
-app.get('/',function (req, res) {
+app.get('/', function (req, res) {
 
     res.send('hello world');
 })
