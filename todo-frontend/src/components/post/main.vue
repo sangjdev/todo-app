@@ -55,7 +55,7 @@
 </template>
 
 <script>
-
+import axios from "axios";
 
 export default {
   data() {
@@ -64,31 +64,19 @@ export default {
       menus: [],
       pages: [],
       counts: [],
-      currentPage: 1      
+      currentPage: 1
     };
-  }, 
+  },
   created() {
-      
-
-    console.log("currentPage : "+ this.$route.params.pagenum);
+    let self = this;
+    console.log("currentPage : " + this.$route.params.pagenum);
     this.currentPage = parseInt(this.$route.params.pagenum);
     // 프리덤~~~~~~~~~~~~ 하루종일 못풀던 페이징 부트스트랩 오류가 단지 스트링으로 표현되있는걸 부트스트랩은 props 내부속성에서 number로 잡고있었다.
     // 그래서 parseInt를 써서 형변환을 해줬다.
 
-
     // this.currentPage = this.$route.params.pagenum;
-    // console.log(products);    
-    this.$http
-      .get("http://localhost:3000/post/post/"+ this.currentPage)
-      .then(function(data) {
-        return data.json();
-      })
-      .then(function(data) {
-        data.forEach(element => {
-          console.log(element);
-          this.blogs.push(element);
-        });
-      });
+    // console.log(products);
+
     this.$http
       .get("http://localhost:3000/post/menu")
       .then(function(data) {
@@ -107,28 +95,73 @@ export default {
       })
       .then(function(data) {
         data.forEach(element => {
-          this.counts.push(element);        
+          this.counts.push(element);
         });
       });
-  }, 
-  computed: {
-      products(){
-          return this.$store.state.products
-      }
+
+    axios("http://localhost:3000/post/post/" + this.currentPage, {
+      method: "get",
+      withCredentials: true,
+      responseType: "stream"
+    })
+      .then(function(response) {
+        console.log("response : " + response.status);
+        console.log("response : " + response.data);
+        console.log("response : " + response.results);
+        let dt = response.data;
+        // console.log("dt : " + dt);
+        // console.log("typeof dt " + typeof dt);
+
+        // let dt2 = JSON.stringify(dt);
+        // console.log("dt2 : " + dt2);
+        // console.log("typeof dt2 " + typeof dt2);
+        dt.forEach(element => {
+          console.log(element);
+          self.blogs.push(element);
+        });
+        // console.log('data : ' + data);
+        // return dt2;
+      })
+      .then(function(data) {
+        data.forEach(element => {
+          console.log(element);
+          this.blogs.push(element);
+        });
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+
+    // this.$http
+    //   .get("http://localhost:3000/post/post/" + this.currentPage)
+    //   .then(function(data) {
+    //     return data.json();
+    //   })
+    //   .then(function(data) {
+    //     data.forEach(element => {
+    //       console.log(element);
+    //       this.blogs.push(element);
+    //     });
+    //   });
   },
-  methods: {      
+  computed: {
+    products() {
+      return this.$store.state.products;
+    }
+  },
+  methods: {
     post: function() {
       let num = this.currentPage;
-      console.log("this.current : " + num);      
-    //   this.$router.push('/' + num);
-        
-    location.href = "/main/" + num;
+      console.log("this.current : " + num);
+      //   this.$router.push('/' + num);
+
+      location.href = "/main/" + num;
 
       // this.currentPage = this.$route.params.id;
       // console.log('123') ;
     }
   }
-}
+};
 </script>
 
 <style>

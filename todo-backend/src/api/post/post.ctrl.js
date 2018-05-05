@@ -171,8 +171,7 @@ exports.post = function (req, res) {
         for (let i in rs) {
             result.push(rs[i]);
         }
-
-        // console.log('최종 result : ' + JSON.stringify(result))
+        console.log('보낸다!');
         res.json(results);
     }).catch(function (err) {
         console.log("finAll()1에러 발생")

@@ -91,7 +91,10 @@ export default {
 
       axios("http://localhost:3000/user/login", {
         method: "post",
-        withCredentials: true
+        withCredentials: true,        
+        data : {
+          userinfo: this.userinfo
+        }
       })
         .then(function(response) {
           console.log(response);
@@ -103,7 +106,13 @@ export default {
     post2: function() {
       axios("http://localhost:3000/user/cc", {
         method: "get",
-        withCredentials: true
+        withCredentials: true,        
+        params : {
+          id: '12345'
+        },
+        data : {
+          id: '1234'
+        }
       })
         .then(function(response) {
           console.log(response);
