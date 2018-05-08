@@ -1,13 +1,12 @@
 <template>
   <div v-cloak>
-    <app-header></app-header>
-    <!-- <app-main></app-main>     -->
-    <!-- <singlePost></singlePost> -->
-    <!-- <addpost></addpost> -->
-    <router-view></router-view>
-    <app-footer></app-footer>    
+    <router-view name="app-header"></router-view>
+    <router-view name="app-content"></router-view>
+    <!-- <router-view></router-view> -->
+    <router-view name="app-footer"></router-view>    
   </div>
 </template>
+
 
 <script>
 import header from './components/common/header.vue'
