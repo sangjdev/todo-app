@@ -1,8 +1,8 @@
 <template>
   <div v-cloak>
-    <router-view name="app-header"></router-view>
+    <router-view name="app-header"></router-view>    
     <router-view name="app-content"></router-view>
-    <!-- <router-view></router-view> -->
+    <!-- <router-view></router-view> -->        
     <router-view name="app-footer"></router-view>    
   </div>
 </template>
@@ -33,6 +33,9 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
+body {
+  color:red;
+  font-size: 300px;
+}
 </style>

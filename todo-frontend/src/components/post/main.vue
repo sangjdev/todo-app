@@ -4,13 +4,14 @@
         <b-col cols="9" >
             <b-card no-body>
                 <b-tabs card>
-                    {{currentPage}}  {{products}}
+                    {{currentPage}} 페이지
+                    <!-- {{products}} -->
                 <b-tab title="전체" active>
                 전체
                 </b-tab>
 
                 <b-tab title="Priority #1">
-                d
+                Priority #1
                 </b-tab>
 
                 <b-tab title="Priority #2">
@@ -31,7 +32,7 @@
                             <router-link v-bind:to="'/post/' + blog._pid ">더보기</router-link>
                         </div>
                     </b-card>
-                </div>                                
+                </div>                
                 <div style="margin-top:35px;">                    
                     <b-pagination align="center" size="md" v-bind:total-rows=counts[0].cnt v-model="currentPage" :per-page="3" v-on:input="post">
                     </b-pagination>
@@ -77,28 +78,6 @@ export default {
     // this.currentPage = this.$route.params.pagenum;
     // console.log(products);
 
-    this.$http
-      .get("http://localhost:3000/post/menu")
-      .then(function(data) {
-        return data.json();
-      })
-      .then(function(data) {
-        data.forEach(element => {
-          this.menus.push(element);
-          console.log(this.menu);
-        });
-      });
-    this.$http
-      .get("http://localhost:3000/post/count")
-      .then(function(data) {
-        return data.json();
-      })
-      .then(function(data) {
-        data.forEach(element => {
-          this.counts.push(element);
-        });
-      });
-
     axios("http://localhost:3000/post/post/" + this.currentPage, {
       method: "get",
       withCredentials: true,
@@ -108,6 +87,10 @@ export default {
         console.log("response : " + response.status);
         console.log("response : " + response.data);
         console.log("response : " + response.results);
+        console.log("response"+response);
+        if (response === null) {
+          console.log("null 체크");
+        }
         let dt = response.data;
         // console.log("dt : " + dt);
         // console.log("typeof dt " + typeof dt);
@@ -129,7 +112,34 @@ export default {
         });
       })
       .catch(function(error) {
+        if (confirm('로그인이 필요합니다.')) {
+          location.href = '/login'
+        } else {
+          location.href = '/login'
+        }
         console.log(error);
+      });
+
+    this.$http
+      .get("http://localhost:3000/post/menu")
+      .then(function(data) {
+        return data.json();
+      })
+      .then(function(data) {
+        data.forEach(element => {
+          this.menus.push(element);
+          console.log(this.menu);
+        });
+      });
+    this.$http
+      .get("http://localhost:3000/post/count")
+      .then(function(data) {
+        return data.json();
+      })
+      .then(function(data) {
+        data.forEach(element => {
+          this.counts.push(element);
+        });
       });
 
     // this.$http

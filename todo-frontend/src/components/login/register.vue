@@ -1,18 +1,7 @@
 <template>
-<b-container class="bv-example-row" style="min-height:900px">    
-   <b-form-group
-      id="fieldset1"
-      description="Let us know your name."
-      label="Enter your name"
-      label-for="input1"
-      :invalid-feedback="invalidFeedback"
-      :valid-feedback="validFeedback"
-      :state="state"
-   >
-   <b-form-input id="input1" :state="state" v-model.trim="name"></b-form-input>
-  </b-form-group>
+<b-container class="bv-example-row" style="min-height:900px">          
 
-<b-card bg-variant="light">
+<b-card bg-variant="light" style="margin-top: 250px;">
   <b-form-group horizontal
                 breakpoint="lg"
                 label="회원가입"
@@ -41,7 +30,7 @@
 
   </b-form-group>
 </b-card>
-<div class="float-right">  
+<div class="float-right" style="margin-top: 50px;">  
   <b-button  v-on:click.prevent="post">회원가입</b-button>
 </div>
 
